@@ -94,7 +94,7 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
 
                             String password = ((EditText)rootView.findViewById(R.id.txtPassword)).getText().toString();
 
-                            //if password is empty tries to connect without a passoword
+                            //if password is empty tries to connect without a password
                             sBeacon.connect(getActivity(),password);
 
                             Log.e("SID", sBeacon.getsId());
@@ -112,7 +112,7 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     public void onClick(View view) {
 
                         if(sBeacon!=null){
-
+                            sBeacon.alert(true, true);
                             sBeacon.disconnect();
 
 
