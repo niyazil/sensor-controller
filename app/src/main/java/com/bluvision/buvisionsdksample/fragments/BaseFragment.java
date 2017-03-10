@@ -5,9 +5,6 @@ import com.bluvision.beeks.sdk.domainobjects.Beacon;
 import android.app.Activity;
 import android.app.Fragment;
 
-/**
- * Created by Leandro Salas on 10/15/15.
- */
 public class BaseFragment extends Fragment {
 
     protected FragmentInterface mInterface;

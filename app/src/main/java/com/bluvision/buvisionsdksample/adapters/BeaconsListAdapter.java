@@ -13,9 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by Leandro Salas on 10/14/15.
- */
+
 public class BeaconsListAdapter extends BaseAdapter {
 
     private List<Beacon> listaData;

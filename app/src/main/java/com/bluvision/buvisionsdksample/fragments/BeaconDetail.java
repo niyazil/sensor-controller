@@ -26,9 +26,7 @@ import android.widget.Toast;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Created by Leandro Salas on 10/15/15.
- */
+
 public class BeaconDetail extends BaseFragment implements BeaconConfigurationListener {
 
     private View rootView;
