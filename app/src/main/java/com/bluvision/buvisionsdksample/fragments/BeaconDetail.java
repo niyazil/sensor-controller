@@ -144,6 +144,15 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
         if(connected && authenticated){
 
             sBeacon.alert(true, true);
+            sBeacon.readStatus();
+            sBeacon.readTemperature();
+            sBeacon.setIntervalTxPower((byte)2,(byte)3,(float)0.5,(float)1);
+            Log.e("LOOK! battery",String.valueOf(sBeacon.getBattery()));
+            Log.e("LOOK! temperature",String.valueOf(sBeacon.getTemperatureFromScanRecord()));
+            Log.e("LOOK! SID",sBeacon.getsId());
+            Log.e("LOOK! contents", String.valueOf(sBeacon.describeContents()));
+            Log.e("LOOK! device type", String.valueOf(sBeacon.getDeviceType()));
+
             ConfigurableBeacon configurableBeacon = (ConfigurableBeacon)sBeacon;
 
             configurableBeacon.readIBeaconUUID();
