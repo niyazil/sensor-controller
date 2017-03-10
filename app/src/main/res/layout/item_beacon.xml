@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:padding="16dp"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="8pt"
+        android:text="Name of Device"/>
+
+    <TextView
+        android:id="@+id/txtRssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="-56"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/txtMacAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="7pt"
+        android:text="IBeacon+Eddystone+SBeacon"/>
+
+</LinearLayout>
