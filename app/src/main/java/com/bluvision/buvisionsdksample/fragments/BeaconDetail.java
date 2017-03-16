@@ -133,6 +133,15 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     }
                 });
 
+        ((Button)rootView.findViewById(R.id.assign)).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                    }
+                });
+
 
         return rootView;
     }
