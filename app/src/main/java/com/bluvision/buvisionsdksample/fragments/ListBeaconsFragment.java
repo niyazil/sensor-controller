@@ -54,8 +54,10 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
          *  in this sample app we are discovering Sbeacons and IBeacons.
          *  you can remove the ones you don't want to discover.
          */
-        mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
-        //mBeaconManager.addRuleRestrictionToIncludeSID("CDDF3C6FAE7A57F8");
+        //mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
+        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
+        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
+        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
 
     }
 
