@@ -11,6 +11,7 @@ import com.bluvision.beeks.sdk.util.BeaconManager;
 import com.bluvision.buvisionsdksample.BluvisionSampleSDKApplication;
 import com.bluvision.buvisionsdksample.R;
 
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -23,8 +24,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.util.UUID;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.File;
+import java.util.Date;
+import jxl.*;
 
 
 public class BeaconDetail extends BaseFragment implements BeaconConfigurationListener {
@@ -137,8 +143,33 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                try {
+                    //Open excel file
+                    AssetManager am = getActivity().getAssets();
+                    InputStream is = am.open("power1.xls");
+                    Workbook wb=Workbook.getWorkbook(is);
+                    Sheet sheet=wb.getSheet(0);
+                    int numRows=sheet.getRows();
+                    int numCol=sheet.getColumns();
 
+                    //Read SID and read power allocation from file and store
+                    for(int row=0;row<numRows;row++){
+                       Cell cell=sheet.getCell(0,row);
+                        String currentSID=cell.getContents();
+                        cell=sheet.getCell(1,row);
+                        String currentPower=cell.getContents();
 
+                        Log.e("SID",currentSID);
+                        Log.e("Power",currentPower);
+
+                    }
+                    //Connect to beacon
+                    //Blink beacon
+                    //Allocate power
+
+                }catch(Exception e){
+
+                }
                     }
                 });
 
