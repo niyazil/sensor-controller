@@ -24,10 +24,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile(name: 'app', ext: 'aar')
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.getbase:floatingactionbutton:1.10.0'
+    compile files('libs/jxl.jar')
 }
 repositories {
     flatDir {
