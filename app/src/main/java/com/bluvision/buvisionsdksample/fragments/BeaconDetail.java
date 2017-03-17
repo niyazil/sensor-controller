@@ -31,6 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.io.File;
 import java.util.Date;
 import jxl.*;
+import jxl.write.*;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
 
 
 public class BeaconDetail extends BaseFragment implements BeaconConfigurationListener {
@@ -173,9 +177,37 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     }
                 });
 
+        ((Button)rootView.findViewById(R.id.record)).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            WritableWorkbook workbook = Workbook.createWorkbook(new File("readings.xls"));
+                            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+                            Label currentSID = new Label(0,0, sBeacon.getsId());
+                            sheet.addCell(currentSID);
+                            Log.e("SID","currentSID");
+
+                            float currentTemperature=sBeacon.getTemperatureFromScanRecord();
+                            Label currentReading = new Label(1,0, String.valueOf(currentTemperature));
+                            sheet.addCell(currentReading);
+
+                            workbook.write();
+                            workbook.close();
+                            Log.e("Temperature",String.valueOf(currentTemperature));
+
+                        }catch(Exception e){
+                            Log.e("This","is an exception!");
+                        }
+                    }
+                });
+
 
         return rootView;
     }
+
+
+
 
     public void setBeacon(Beacon beacon) {
         mBeacon = beacon;

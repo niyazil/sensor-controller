@@ -58,6 +58,11 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
         mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
         mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
+        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
+        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+
+
+
 
     }
 
