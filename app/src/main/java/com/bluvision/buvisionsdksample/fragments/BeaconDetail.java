@@ -192,6 +192,64 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     @Override
                     public void onClick(View view) {
 
+                        String Fnamexls="testfile"  + ".xls";
+                        File sdCard = Environment.getExternalStorageDirectory();
+                        File directory = new File (sdCard.getAbsolutePath() + "/newfolder");
+                        directory.mkdirs();
+                        File file = new File(directory, Fnamexls);
+
+                        WorkbookSettings wbSettings = new WorkbookSettings();
+
+                        wbSettings.setLocale(new Locale("en", "EN"));
+
+                        WritableWorkbook workbook;
+
+                        Log.e("Where are we?","1");
+                        try {
+                            int a = 1;
+                            workbook = Workbook.createWorkbook(file, wbSettings);
+                            //workbook.createSheet("Report", 0);
+                            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+                            Label label = new Label(0, 2, "SECOND");
+                            Label label1 = new Label(0,1,"first");
+                            Label label0 = new Label(0,0,"HEADING");
+                            Label label3 = new Label(1,0,"Heading2");
+                            Label label4 = new Label(1,1,String.valueOf(a));
+                            Log.e("Where are we?","2");
+                            try {
+                                sheet.addCell(label);
+                                sheet.addCell(label1);
+                                sheet.addCell(label0);
+                                sheet.addCell(label4);
+                                sheet.addCell(label3);
+                                Log.e("Where are we?","3");
+                            } catch (RowsExceededException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                Log.e("Where are we?","4");
+                            } catch (WriteException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                Log.e("Where are we?","5");
+                            }
+
+
+                            workbook.write();
+                            try {
+                                workbook.close();
+                                Log.e("Where are we?","6");
+                            } catch (WriteException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                Log.e("Where are we?","7");
+                            }
+                            //createExcel(excelSheet);
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            Log.e("Where are we?","8");
+                        }
+
                     }
                 });
 
