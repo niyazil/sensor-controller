@@ -13,6 +13,7 @@ import com.bluvision.buvisionsdksample.R;
 
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.util.Log;
@@ -24,7 +25,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+
+import java.util.Locale;
 import java.util.UUID;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,6 +40,7 @@ import jxl.write.*;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
+import jxl.write.biff.RowsExceededException;
 
 
 public class BeaconDetail extends BaseFragment implements BeaconConfigurationListener {
@@ -157,6 +163,7 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     int numCol=sheet.getColumns();
 
                     //Read SID and read power allocation from file and store
+                    String excelContents="";
                     for(int row=0;row<numRows;row++){
                        Cell cell=sheet.getCell(0,row);
                         String currentSID=cell.getContents();
@@ -166,7 +173,10 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                         Log.e("SID",currentSID);
                         Log.e("Power",currentPower);
 
+                        excelContents=excelContents+currentSID+" "+currentPower+"\n";
                     }
+                    //show in a textView to make sure app also has access to excel sheet
+                    displayExcel(excelContents);
                     //Connect to beacon
                     //Blink beacon
                     //Allocate power
@@ -181,24 +191,7 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        try {
-                            WritableWorkbook workbook = Workbook.createWorkbook(new File("readings.xls"));
-                            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
-                            Label currentSID = new Label(0,0, sBeacon.getsId());
-                            sheet.addCell(currentSID);
-                            Log.e("SID","currentSID");
 
-                            float currentTemperature=sBeacon.getTemperatureFromScanRecord();
-                            Label currentReading = new Label(1,0, String.valueOf(currentTemperature));
-                            sheet.addCell(currentReading);
-
-                            workbook.write();
-                            workbook.close();
-                            Log.e("Temperature",String.valueOf(currentTemperature));
-
-                        }catch(Exception e){
-                            Log.e("This","is an exception!");
-                        }
                     }
                 });
 
@@ -471,5 +464,10 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
     @Override
     public void onUpdateFirmware(double v) {
 
+    }
+
+    public void displayExcel(String text){
+        TextView excelContents=(TextView) rootView.findViewById(R.id.excelFileContents);
+        excelContents.setText(text);
     }
 }

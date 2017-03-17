@@ -98,5 +98,14 @@
 
     </LinearLayout>
 
+    <TextView
+        android:text="What's in the excel file?"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="106dp"
+        android:id="@+id/excelFileContents"
+        android:layout_below="@+id/containerActions"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>
