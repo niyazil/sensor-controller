@@ -192,7 +192,7 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                     @Override
                     public void onClick(View view) {
 
-                        String Fnamexls="testfile"  + ".xls";
+                        String Fnamexls="sensorReadings"  + ".xls";
                         File sdCard = Environment.getExternalStorageDirectory();
                         File directory = new File (sdCard.getAbsolutePath() + "/newfolder");
                         directory.mkdirs();
@@ -210,17 +210,26 @@ public class BeaconDetail extends BaseFragment implements BeaconConfigurationLis
                             workbook = Workbook.createWorkbook(file, wbSettings);
                             //workbook.createSheet("Report", 0);
                             WritableSheet sheet = workbook.createSheet("First Sheet", 0);
-                            Label label = new Label(0, 2, "SECOND");
-                            Label label1 = new Label(0,1,"first");
-                            Label label0 = new Label(0,0,"HEADING");
-                            Label label3 = new Label(1,0,"Heading2");
-                            Label label4 = new Label(1,1,String.valueOf(a));
+                            Label label0 = new Label(0, 0, "SID");
+                            Label label1 = new Label(1, 0, "Temperature");
+
+                            //get SID and temperature of currently selected beacon
+                            String currentSID=sBeacon.getsId();
+                            String currentTemperature=String.valueOf(sBeacon.getTemperature());
+
+
+                            //What is the difference??
+                            Log.e("getTemperature()",String.valueOf(sBeacon.getTemperature()));
+                            Log.e("getTemperatureFromScan",String.valueOf(sBeacon.getTemperatureFromScanRecord()));
+
+                            Label label2 = new Label(0, 1, currentSID);
+                            Label label3 = new Label(1, 1, currentTemperature);
+
                             Log.e("Where are we?","2");
                             try {
-                                sheet.addCell(label);
-                                sheet.addCell(label1);
                                 sheet.addCell(label0);
-                                sheet.addCell(label4);
+                                sheet.addCell(label1);
+                                sheet.addCell(label2);
                                 sheet.addCell(label3);
                                 Log.e("Where are we?","3");
                             } catch (RowsExceededException e) {
