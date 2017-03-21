@@ -39,6 +39,8 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     private ListView lstBeacons;
 
     private boolean scaning = false;
+    private BeaconDetailReduced beacon=new BeaconDetailReduced();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,13 +110,13 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 //                            Log.e("First beacon",String.valueOf(beacon0.getsId()));
 //                            Log.e("Second beacon",String.valueOf(beacon1.getsId()));
 
-                            BeaconDetailReduced beacon0=new BeaconDetailReduced();
+                            /*BeaconDetailReduced beacon0=new BeaconDetailReduced();
                             beacon0.sBeacon=(SBeacon) beaconList.get(0);
                             Log.e("First beacon",String.valueOf(beacon0.sBeacon.getsId()));
                             beacon0.sBeacon.setBeaconConfigurationListener(beacon0);
 
                             //Connect
-                            beacon0.sBeacon.connect(getActivity(),null);
+                            beacon0.sBeacon.connect(getActivity(),null);*/
 
                             //Disconnect
                             /*beacon0.sBeacon.disconnect();
@@ -134,13 +136,17 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                             //Assign second beacon to the same variable
                            /* beacon0.sBeacon=(SBeacon) beaconList.get(1);
                             //Connect
-                            beacon0.sBeacon.connect(getActivity(),null);
-*/
+                            beacon0.sBeacon.connect(getActivity(),null);*/
+                            beacon.beaconList=beaconList;
+                            beacon.beaconBirth();
                         }
 
                     }
                 }
         );
+
+
+
 
         mBeaconsListAdapter = new BeaconsListAdapter(getActivity(), beaconList);
         lstBeacons.setAdapter(mBeaconsListAdapter);
@@ -205,5 +211,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public void bluetoothIsNotEnabled() {
         Toast.makeText(getActivity(),"Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
     }
+
+
 
 }

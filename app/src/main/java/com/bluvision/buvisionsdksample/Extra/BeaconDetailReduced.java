@@ -1,4 +1,5 @@
 package com.bluvision.buvisionsdksample.Extra;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,10 +16,22 @@ import java.util.UUID;
 // This class is a reduced version of BeaconDetails. We need the BeaconCofigurationListener in order to connect to beacons,
 //but we don't need the extra fragment methods in BeaconDetails. An instance of this class has an SBeacon as a an attribute.
 
-public class BeaconDetailReduced implements BeaconConfigurationListener {
+public class BeaconDetailReduced extends Activity implements BeaconConfigurationListener {
 public SBeacon sBeacon;
+public int beaconListIndex=0;
+public List<Beacon> beaconList;
+
 
     public BeaconDetailReduced() {
+
+    }
+
+    //For starting the circle of life
+    public void beaconBirth(){
+        sBeacon=(SBeacon) beaconList.get(beaconListIndex);
+        Log.e("Beacon SID",String.valueOf(sBeacon.getsId()));
+        sBeacon.setBeaconConfigurationListener(this);
+        sBeacon.connect(getParent(),null);
 
     }
 
@@ -32,7 +45,7 @@ public SBeacon sBeacon;
 
         sBeacon.alert(true,true);
         Log.e("Beacon","Lights?");
-        sBeacon.setIntervalTxPower((byte)1,(byte)1,(float)1,(float)1);
+        sBeacon.setIntervalTxPower((byte)2,(byte)2,(float)0.5,(float)0.5);
         Log.e("Beacon","Power");
 
 
@@ -42,6 +55,15 @@ public SBeacon sBeacon;
     @Override
     public void onDisconnect() {
     Log.e("Beacon","Disconnect");
+        if(beaconListIndex<3){
+            beaconListIndex++;
+            Log.e("onDisconnect","Incrementing list index");
+            beaconBirth();
+        }else{
+            Log.e("onDisconnect","Done");
+            beaconListIndex=0;
+        }
+
 
     }
 
