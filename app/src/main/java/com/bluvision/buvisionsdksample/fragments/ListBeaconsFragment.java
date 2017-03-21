@@ -6,11 +6,13 @@ import com.bluvision.beeks.sdk.domainobjects.SBeacon;
 import com.bluvision.beeks.sdk.interfaces.BeaconListener;
 import com.bluvision.beeks.sdk.util.BeaconManager;
 import com.bluvision.buvisionsdksample.BluvisionSampleSDKApplication;
+import com.bluvision.buvisionsdksample.Extra.BeaconDetailReduced;
 import com.bluvision.buvisionsdksample.R;
 import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,10 +25,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Handler;
 
-/**
- * Created by Leandro Salas on 10/15/15.
- */
 public class ListBeaconsFragment extends BaseFragment implements BeaconListener {
 
     private BeaconManager mBeaconManager;
@@ -56,12 +56,12 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
          *  in this sample app we are discovering Sbeacons and IBeacons.
          *  you can remove the ones you don't want to discover.
          */
-        //mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
-        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
-        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
-        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
-        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
-        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+        mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
+//        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
+//        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
+//        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
+//        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
+//        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
 
 
 
@@ -103,10 +103,32 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                         if (scaning) {
                             stopScan();
                            // mBeaconManager.stop();
-                            SBeacon beacon0=(SBeacon) beaconList.get(0);
-                            SBeacon beacon1=(SBeacon) beaconList.get(1);
-                            Log.e("First beacon",String.valueOf(beacon0.getsId()));
-                            Log.e("Second beacon",String.valueOf(beacon1.getsId()));
+//                            SBeacon beacon0=(SBeacon) beaconList.get(0);
+//                            SBeacon beacon1=(SBeacon) beaconList.get(1);
+//                            Log.e("First beacon",String.valueOf(beacon0.getsId()));
+//                            Log.e("Second beacon",String.valueOf(beacon1.getsId()));
+
+                            BeaconDetailReduced beacon0=new BeaconDetailReduced();
+                            beacon0.sBeacon=(SBeacon) beaconList.get(0);
+                            Log.e("First beacon",String.valueOf(beacon0.sBeacon.getsId()));
+                            beacon0.sBeacon.setBeaconConfigurationListener(beacon0);
+
+                            //Connect
+                            beacon0.sBeacon.connect(getActivity(),null);
+
+                            //Disconnect
+                            /*beacon0.sBeacon.disconnect();
+                            SystemClock.sleep(10000);*/
+
+                            /*BeaconDetailReduced beacon1=new BeaconDetailReduced();
+                            beacon1.sBeacon=(SBeacon) beaconList.get(1);
+                            Log.e("Second beacon",String.valueOf(beacon1.sBeacon.getsId()));
+                            beacon1.sBeacon.setBeaconConfigurationListener(beacon1);
+
+                            //Connect
+                            beacon1.sBeacon.connect(getActivity(),null);
+                            //Disconnect
+                            //beacon1.sBeacon.disconnect();*/
                         }
 
                     }
