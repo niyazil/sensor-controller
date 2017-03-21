@@ -23,6 +23,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity implements BaseFragment.FragmentInterface {
 
     private final int PERMISSION_REQUEST_COARSE_LOCATION = 1984;
+    private final int PERMISSION_REQUEST_STORAGE=1994;
 
     private HashMap<Class,Fragment> mFragmentHashMap = new HashMap<>();
     private BeaconDetail mBeaconDetail;
@@ -49,6 +50,26 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Frag
                         requestPermissions(
                                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                                 PERMISSION_REQUEST_COARSE_LOCATION);
+                    }
+
+                });
+                builder.show();
+            }
+
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("This app needs storage access");
+                builder.setMessage("Please grant storage access so this app can record sensor readings");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+
+                        requestPermissions(
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PERMISSION_REQUEST_STORAGE);
                     }
 
                 });
