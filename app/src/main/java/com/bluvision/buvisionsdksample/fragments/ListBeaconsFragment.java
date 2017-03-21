@@ -2,6 +2,7 @@ package com.bluvision.buvisionsdksample.fragments;
 
 import com.bluvision.beeks.sdk.constants.BeaconType;
 import com.bluvision.beeks.sdk.domainobjects.Beacon;
+import com.bluvision.beeks.sdk.domainobjects.SBeacon;
 import com.bluvision.beeks.sdk.interfaces.BeaconListener;
 import com.bluvision.beeks.sdk.util.BeaconManager;
 import com.bluvision.buvisionsdksample.BluvisionSampleSDKApplication;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -83,7 +85,10 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     public void onClick(View view) {
 
                         if (!scaning) {
+
                             startScan();
+
+
                         }
 
                     }
@@ -96,8 +101,12 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     public void onClick(View view) {
 
                         if (scaning) {
-                            //stopScan();
-                            mBeaconManager.stop();
+                            stopScan();
+                           // mBeaconManager.stop();
+                            SBeacon beacon0=(SBeacon) beaconList.get(0);
+                            SBeacon beacon1=(SBeacon) beaconList.get(1);
+                            Log.e("First beacon",String.valueOf(beacon0.getsId()));
+                            Log.e("Second beacon",String.valueOf(beacon1.getsId()));
                         }
 
                     }
