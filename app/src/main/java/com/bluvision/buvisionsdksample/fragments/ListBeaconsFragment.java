@@ -129,6 +129,13 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                             beacon1.sBeacon.connect(getActivity(),null);
                             //Disconnect
                             //beacon1.sBeacon.disconnect();*/
+
+
+                            //Assign second beacon to the same variable
+                           /* beacon0.sBeacon=(SBeacon) beaconList.get(1);
+                            //Connect
+                            beacon0.sBeacon.connect(getActivity(),null);
+*/
                         }
 
                     }

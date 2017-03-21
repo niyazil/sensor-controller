@@ -34,7 +34,7 @@ public SBeacon sBeacon;
         Log.e("Beacon","Lights?");
         sBeacon.setIntervalTxPower((byte)1,(byte)1,(float)1,(float)1);
         Log.e("Beacon","Power");
-        //sBeacon.disconnect();
+
 
 
     }
@@ -187,6 +187,7 @@ public SBeacon sBeacon;
     @Override
     public void onSetFrameTypeIntervalTxPower(byte b, byte b1, byte b2, float v, float v1) {
         Log.e("Setting power/interval","Success");
+        sBeacon.disconnect();
 
     }
 
