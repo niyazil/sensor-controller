@@ -11,6 +11,7 @@ import com.bluvision.buvisionsdksample.R;
 import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Handler;
+import java.util.HashMap;
 
 public class ListBeaconsFragment extends BaseFragment implements BeaconListener {
 
@@ -40,6 +43,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
     private boolean scaning = false;
     private BeaconDetailReduced beacon=new BeaconDetailReduced();
+    private HashMap<String,Integer> beaconHashMap = new HashMap<>();
 
 
     @Override
@@ -58,12 +62,12 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
          *  in this sample app we are discovering Sbeacons and IBeacons.
          *  you can remove the ones you don't want to discover.
          */
-        mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
-//        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
-//        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
-//        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
-//        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
-//        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+        //mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
+        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
+        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
+        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
+        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
+        //mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
 
 
 
@@ -163,6 +167,30 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
             }
         });
 
+
+        ((Button)rootView.findViewById(R.id.readResults)).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                    Log.e("Does it work?","Yes");
+
+                    //Fill in beaconHashMap with beacon SIDs and allocated powers
+                        beaconHashMap.put("7159F19768D2A171",0);
+                        beaconHashMap.put("A127870322513F6A",1);
+                        beaconHashMap.put("FBB44C2E84AB40E3",2);
+                        beaconHashMap.put("582A8CF7C8193BFA",3);
+
+                        Log.e("Beacon 1",String.valueOf(beaconHashMap.get("7159F19768D2A171")));
+                        Log.e("Beacon 4",String.valueOf(beaconHashMap.get("582A8CF7C8193BFA")));
+
+                        beacon.beaconHashMap=beaconHashMap;
+
+
+                        }
+
+                    }
+                );
+
         return rootView;
     }
 
@@ -211,6 +239,8 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public void bluetoothIsNotEnabled() {
         Toast.makeText(getActivity(),"Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
     }
+
+
 
 
 

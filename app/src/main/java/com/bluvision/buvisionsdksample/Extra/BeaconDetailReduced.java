@@ -1,6 +1,7 @@
 package com.bluvision.buvisionsdksample.Extra;
 import android.app.Activity;
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.bluvision.beeks.sdk.domainobjects.Beacon;
@@ -9,6 +10,7 @@ import com.bluvision.beeks.sdk.domainobjects.SBeacon;
 import com.bluvision.beeks.sdk.interfaces.BeaconConfigurationListener;
 import com.bluvision.buvisionsdksample.R;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ public class BeaconDetailReduced extends Activity implements BeaconConfiguration
 public SBeacon sBeacon;
 public int beaconListIndex=0;
 public List<Beacon> beaconList;
+public HashMap<String,Integer> beaconHashMap;
 
 
     public BeaconDetailReduced() {
@@ -29,8 +32,8 @@ public List<Beacon> beaconList;
     //For starting the circle of life
     public void beaconBirth(){
         sBeacon=(SBeacon) beaconList.get(beaconListIndex);
-        Log.e("Beacon SID",String.valueOf(sBeacon.getsId()));
-        sBeacon.setBeaconConfigurationListener(this);
+        Log.e("Beacon SID",sBeacon.getsId());
+        sBeacon.setBeaconConfigurationListener(this); //sets the BeaconConfigurationListener to the BeaconDetailReduced object for which this method is called
         sBeacon.connect(getParent(),null);
 
     }
@@ -45,10 +48,21 @@ public List<Beacon> beaconList;
 
         sBeacon.alert(true,true);
         Log.e("Beacon","Lights?");
-        sBeacon.setIntervalTxPower((byte)2,(byte)2,(float)0.5,(float)0.5);
+
+        //get SID and corresponding power from hashmap
+        String key=sBeacon.getsId();
+        int power= beaconHashMap.get(key);
+        sBeacon.setIntervalTxPower((byte)-5,(byte)power,(float)1,(float)1);
         Log.e("Beacon","Power");
 
 
+
+    }
+
+    @Override
+    public void onSetFrameTypeIntervalTxPower(byte b, byte b1, byte b2, float v, float v1) {
+        Log.e("Setting power/interval","Success");
+        sBeacon.disconnect();
 
     }
 
@@ -58,6 +72,7 @@ public List<Beacon> beaconList;
         if(beaconListIndex<3){
             beaconListIndex++;
             Log.e("onDisconnect","Incrementing list index");
+            SystemClock.sleep(5000);
             beaconBirth();
         }else{
             Log.e("onDisconnect","Done");
@@ -206,12 +221,7 @@ public List<Beacon> beaconList;
 
     }
 
-    @Override
-    public void onSetFrameTypeIntervalTxPower(byte b, byte b1, byte b2, float v, float v1) {
-        Log.e("Setting power/interval","Success");
-        sBeacon.disconnect();
 
-    }
 
     @Override
     public void onFailedToReadFrameTypeIntervalTxPower() {
