@@ -12,6 +12,7 @@ import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.app.Fragment;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -24,11 +25,32 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.HashMap;
+
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+
+
+
+import java.util.Locale;
+import java.util.UUID;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.io.File;
+import java.util.Date;
+import jxl.*;
+import jxl.write.*;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.biff.RowsExceededException;
+
 
 public class ListBeaconsFragment extends BaseFragment implements BeaconListener {
 
@@ -174,16 +196,37 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     public void onClick(View view) {
                     Log.e("Does it work?","Yes");
 
-                    //Fill in beaconHashMap with beacon SIDs and allocated powers
-                        beaconHashMap.put("7159F19768D2A171",0);
-                        beaconHashMap.put("A127870322513F6A",1);
-                        beaconHashMap.put("FBB44C2E84AB40E3",2);
-                        beaconHashMap.put("582A8CF7C8193BFA",3);
+                        try{
+                            //Open excel file
+                            AssetManager am = getActivity().getAssets();
+                            InputStream is = am.open("power1.xls");
+                            Workbook wb=Workbook.getWorkbook(is);
+                            Sheet sheet=wb.getSheet(0);
+                            int numRows=sheet.getRows();
+                            int numCol=sheet.getColumns();
 
-                        Log.e("Beacon 1",String.valueOf(beaconHashMap.get("7159F19768D2A171")));
-                        Log.e("Beacon 4",String.valueOf(beaconHashMap.get("582A8CF7C8193BFA")));
+                            //Read SID and read power allocation from file and store
+                            String excelContents="";
+                            for(int row=0;row<numRows;row++){
+                                Cell cell=sheet.getCell(0,row);
+                                String currentSID=cell.getContents();
+                                cell=sheet.getCell(1,row);
+                                String currentPower= cell.getContents();
 
+                                //Fill in beaconHashMap with beacon SIDs and allocated powers
+
+                                beaconHashMap.put(currentSID,Integer.valueOf(currentPower));
+                                Log.e("Current SID and power",String.valueOf(beaconHashMap.get(currentSID)));
+
+                            }
+
+
+                        }catch(Exception e){
+                            Log.e("Exception","Yes");
+                        }
                         beacon.beaconHashMap=beaconHashMap;
+
+
 
 
                         }
