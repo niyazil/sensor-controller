@@ -12,6 +12,7 @@ import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -70,6 +72,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     private HashMap<String,Integer> beaconHashMap = new HashMap<>();
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,9 +99,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
 
 
-
-
     }
+
+
 
     @Nullable
     @Override
@@ -201,6 +204,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     Log.e("Does it work?","Yes");
 
                         try{
+
                             //Open excel file
                             AssetManager am = getActivity().getAssets();
                             InputStream is = am.open("power1.xls");
@@ -326,6 +330,8 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
                     }
                 });
+
+
 
 
         return rootView;
