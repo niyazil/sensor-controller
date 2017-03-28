@@ -69,10 +69,10 @@ public HashMap<String,Integer> beaconHashMap;
     @Override
     public void onDisconnect() {
     Log.e("Beacon","Disconnect");
-        if(beaconListIndex<3){
+        if(beaconListIndex<(beaconList.size()-1)){
             beaconListIndex++;
             Log.e("onDisconnect","Incrementing list index");
-            SystemClock.sleep(5000);
+            //SystemClock.sleep(5000);
             beaconBirth();
         }else{
             Log.e("onDisconnect","Done");

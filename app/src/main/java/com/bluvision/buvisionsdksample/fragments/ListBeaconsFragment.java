@@ -14,6 +14,7 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import android.app.Fragment;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,7 +91,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
         mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
         mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
-        //mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+        mBeaconManager.addRuleRestrictionToIncludeSID("8E453771B5785ED8");
+        mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
 
 
 
@@ -233,6 +237,96 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
                     }
                 );
+
+        ((Button)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        String Fnamexls="sensorReadings"  + ".xls";
+                        File sdCard = Environment.getExternalStorageDirectory();
+                        File directory = new File (sdCard.getAbsolutePath() + "/newfolder");
+                        directory.mkdirs();
+                        File file = new File(directory, Fnamexls);
+
+                        WorkbookSettings wbSettings = new WorkbookSettings();
+
+                        wbSettings.setLocale(new Locale("en", "EN"));
+
+                        WritableWorkbook workbook;
+
+                        Log.e("Where are we?","1");
+
+
+
+                            try {
+                                int a = 1;
+                                workbook = Workbook.createWorkbook(file, wbSettings);
+                                //workbook.createSheet("Report", 0);
+                                WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+                                Label label0 = new Label(0, 0, "SID");
+                                Label label1 = new Label(1, 0, "Temperature");
+
+                                try{
+                                    sheet.addCell(label0);
+                                    sheet.addCell(label1);
+                                }catch(Exception e){
+                                    Log.e("Headings","Couldn't add");
+                                }
+
+                                for(int i=0;i<beaconList.size();i++){
+                                //get SID and temperature of currently selected beacon
+                                SBeacon currentBeacon=(SBeacon) beaconList.get(i);
+                                String currentSID=currentBeacon.getsId();
+                                String currentTemperature=String.valueOf(currentBeacon.getTemperature());
+                                Log.e("Get SID and temperature",currentSID+": "+currentTemperature);
+
+
+                                Label label2 = new Label(0, i+1, currentSID);
+                                Label label3 = new Label(1, i+1, currentTemperature);
+                                Log.e("Current row",String.valueOf(i+1));
+
+                                Log.e("Where are we?","2");
+                                try {
+                                    sheet.addCell(label2);
+                                    sheet.addCell(label3);
+                                    Log.e("Where are we?","3");
+                                } catch (RowsExceededException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    Log.e("Where are we?","4");
+                                } catch (WriteException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    Log.e("Where are we?","5");
+                                }
+
+
+
+                                }
+
+                                workbook.write();
+                                try {
+                                    workbook.close();
+                                    Log.e("Where are we?","6");
+                                } catch (WriteException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    Log.e("Where are we?","7");
+                                }
+                            }catch (Exception e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                Log.e("Where are we?","8");
+                            }
+
+
+
+
+                    }
+                });
+
 
         return rootView;
     }
