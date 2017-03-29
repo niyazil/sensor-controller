@@ -7,8 +7,12 @@ import com.bluvision.beeks.sdk.interfaces.BeaconListener;
 import com.bluvision.beeks.sdk.util.BeaconManager;
 import com.bluvision.buvisionsdksample.BluvisionSampleSDKApplication;
 import com.bluvision.buvisionsdksample.Extra.BeaconDetailReduced;
+import com.bluvision.buvisionsdksample.MainActivity;
 import com.bluvision.buvisionsdksample.R;
 import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
+import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.session.AppKeyPair;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.app.Fragment;
@@ -71,6 +75,11 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     private BeaconDetailReduced beacon=new BeaconDetailReduced();
     private HashMap<String,Integer> beaconHashMap = new HashMap<>();
 
+    final static private String APP_KEY = "m4256mepdf15tpv";
+    final static private String APP_SECRET = "dlduhmug8qy77q5";
+    private DropboxAPI<AndroidAuthSession> mDBApi;
+
+
 
 
     @Override
@@ -97,6 +106,16 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
         mBeaconManager.addRuleRestrictionToIncludeSID("8E453771B5785ED8");
         mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
+
+
+        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+        AndroidAuthSession session = new AndroidAuthSession(appKeys);
+        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+
+
+
+
+
 
 
     }
@@ -230,7 +249,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
 
                         }catch(Exception e){
-                            Log.e("Exception","Yes");
+                            Log.e("Read exception","Yes");
                         }
                         beacon.beaconHashMap=beaconHashMap;
 
@@ -331,17 +350,45 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     }
                 });
 
+        ((Button) rootView.findViewById(R.id.loginBtn)).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
+                        mDBApi.getSession().startOAuth2Authentication(getContext());
+                    }
+                }
+        );
 
 
         return rootView;
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mDBApi.getSession().authenticationSuccessful()) {
+            try {
+                // Required to complete auth, sets the access token on the session
+                mDBApi.getSession().finishAuthentication();
+
+                String accessToken = mDBApi.getSession().getOAuth2AccessToken();
+            } catch (IllegalStateException e) {
+                Log.i("DbAuthLog", "Error authenticating", e);
+            }
+        }
+
+
+
+    }
+
+
+    @Override
     public void onPause() {
         super.onPause();
 
-        mBeaconManager.removeBeaconListener(this);
+        //mBeaconManager.removeBeaconListener(this);
 
     }
 
