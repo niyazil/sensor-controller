@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bluvision SDK</string>
+    <string name="app_name">Bluvision SDK with Dropbox</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

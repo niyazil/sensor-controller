@@ -12,12 +12,14 @@ import com.bluvision.buvisionsdksample.R;
 import com.bluvision.buvisionsdksample.adapters.BeaconsListAdapter;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
+import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AppKeyPair;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -32,8 +34,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -108,12 +112,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
 
 
-        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
-        AndroidAuthSession session = new AndroidAuthSession(appKeys);
-        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
 
-
-
+// callback method
+        initialize_session();
 
 
 
@@ -343,14 +344,24 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                                 e.printStackTrace();
                                 Log.e("Where are we?","8");
                             }
+                        uploadFiles(rootView.findViewById(R.id.recordReadings));
 
+                        /*try {
+                            File file2 = new File(sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls");
+
+                            FileInputStream inputStream = new FileInputStream(file2);
+                            DropboxAPI.Entry response = mDBApi.putFile("/sensorReadings.xls", inputStream,file2.length(), null, null);
+                        Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+                        }catch(Exception e){
+                            Log.e("Upload exception","Yes");
+                        }*/
 
 
 
                     }
                 });
 
-        ((Button) rootView.findViewById(R.id.loginBtn)).setOnClickListener(
+        /*((Button) rootView.findViewById(R.id.loginBtn)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -358,7 +369,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                         mDBApi.getSession().startOAuth2Authentication(getContext());
                     }
                 }
-        );
+        );*/
 
 
         return rootView;
@@ -429,9 +440,90 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public void bluetoothIsNotEnabled() {
         Toast.makeText(getActivity(),"Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
     }
+    /*
+     Asynchronous method to upload any file to dropbox*/
+    public class Upload extends AsyncTask<String, Void, String> {
+
+        protected void onPreExecute(){}
+
+    protected String doInBackground(String... arg0) {
+
+        DropboxAPI.Entry response = null;
+
+        try {
+
+            // Define path of file to be upload
+            File sdCard = Environment.getExternalStorageDirectory();
+            File file = new File(sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls");
+            FileInputStream inputStream = new FileInputStream(file);
+
+            // put the file to dropbox
+            Log.e("Before upload", "Here");
+            response = mDBApi.putFile("/sensorReadings.xls", inputStream,
+                    file.length(), null, null);
+            Log.e("After upload", "Here");
+           // Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+
+        } catch (IOException e){
+
+            e.printStackTrace();
+            Log.e("Upload IOException","Yes");
+        } catch(DropboxException d){
+            d.printStackTrace();
+            Log.e("Upload DropboxException","Yes");
+        } catch(UnresolvedAddressException e){
+            Log.e("UnresolvedException","Yes");
+        } catch(Exception e){
+            Log.e("UnresolvedException","Yes");
+        }
+
+
+        return response.rev;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+
+        if(result.isEmpty() == false){
+
+            //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+
+            Log.e("DbExampleLog", "The uploaded file's rev is: " + result);
+        }
+    }
 
 
 
+}
+
+
+/*    *//**
+     * Callback register method to execute the upload method
+     * @param view
+     */
+    public void uploadFiles(View view){
+
+        new Upload().execute();
+    }
+
+
+
+    /**
+     *  Initialize the Session of the Key pair to authenticate with dropbox
+     *
+     */
+    protected void initialize_session(){
+
+        // store app key and secret key
+        AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+        AndroidAuthSession session = new AndroidAuthSession(appKeys);
+        //Pass app key pair to the new DropboxAPI object
+        mDBApi = new DropboxAPI<AndroidAuthSession>(session);
+        // MyActivity below should be your activity class name
+        // start session
+        mDBApi.getSession().startOAuth2Authentication(getContext());
+
+    }
 
 
 }
