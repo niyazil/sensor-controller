@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.UnresolvedAddressException;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Handler;
 import java.util.HashMap;
+import java.util.Date;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -62,7 +64,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.biff.RowsExceededException;
-
+import java.text.DateFormat;
 
 public class ListBeaconsFragment extends BaseFragment implements BeaconListener {
 
@@ -223,6 +225,16 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     public void onClick(View view) {
                     Log.e("Does it work?","Yes");
 
+                        File sdCard = Environment.getExternalStorageDirectory();
+                        File file = new File(sdCard.getAbsolutePath() + "/newfolder/power.xls");
+                        FileOutputStream outputStream = null;
+                        try {
+                            outputStream = new FileOutputStream(file);
+                            DropboxAPI.DropboxFileInfo info = mDBApi.getFile("/power1.xls", null, outputStream, null);
+                            Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+                        }catch(Exception e){
+                            Log.e("Exception", "Yes");
+                        }
                         try{
 
                             //Open excel file
@@ -291,30 +303,41 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                                 WritableSheet sheet = workbook.createSheet("First Sheet", 0);
                                 Label label0 = new Label(0, 0, "SID");
                                 Label label1 = new Label(1, 0, "Temperature");
+                                Label label2 = new Label(2, 0, "RSSI");
+                                Label label3 = new Label(3, 0, "Timestamp");
 
                                 try{
                                     sheet.addCell(label0);
                                     sheet.addCell(label1);
+                                    sheet.addCell(label2);
+                                    sheet.addCell(label3);
                                 }catch(Exception e){
                                     Log.e("Headings","Couldn't add");
                                 }
+
 
                                 for(int i=0;i<beaconList.size();i++){
                                 //get SID and temperature of currently selected beacon
                                 SBeacon currentBeacon=(SBeacon) beaconList.get(i);
                                 String currentSID=currentBeacon.getsId();
                                 String currentTemperature=String.valueOf(currentBeacon.getTemperature());
+                                String currentRSSI=String.valueOf(currentBeacon.getRssi());
+                                String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                                 Log.e("Get SID and temperature",currentSID+": "+currentTemperature);
 
 
-                                Label label2 = new Label(0, i+1, currentSID);
-                                Label label3 = new Label(1, i+1, currentTemperature);
+                                Label label4 = new Label(0, i+1, currentSID);
+                                Label label5 = new Label(1, i+1, currentTemperature);
+                                Label label6 = new Label(2, i+1, currentRSSI);
+                                Label label7 = new Label(3, i+1, currentDateTimeString);
                                 Log.e("Current row",String.valueOf(i+1));
 
                                 Log.e("Where are we?","2");
                                 try {
-                                    sheet.addCell(label2);
-                                    sheet.addCell(label3);
+                                    sheet.addCell(label4);
+                                    sheet.addCell(label5);
+                                    sheet.addCell(label6);
+                                    sheet.addCell(label7);
                                     Log.e("Where are we?","3");
                                 } catch (RowsExceededException e) {
                                     // TODO Auto-generated catch block
