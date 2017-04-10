@@ -30,6 +30,7 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.10.0'
     compile files('libs/jxl.jar')
     compile files('libs/dropbox-android-sdk-1.6.3.jar')
+    compile files('libs/json-simple-1.1.1.jar')
 }
 repositories {
     flatDir {

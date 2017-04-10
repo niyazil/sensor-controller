@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -116,8 +117,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
 
 // callback method
+        Log.e("onCreate","Before initializing session");
         initialize_session();
-
+         Log.e("onCreate","After initializing session");
 
 
 
@@ -225,17 +227,34 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     public void onClick(View view) {
                     Log.e("Does it work?","Yes");
 
-                        File sdCard = Environment.getExternalStorageDirectory();
-                        File file = new File(sdCard.getAbsolutePath() + "/newfolder/power.xls");
+                      /*  File sdCard = Environment.getExternalStorageDirectory();
+                        File file = new File(sdCard.getAbsolutePath() + "/newfolder/power1.xls");
                         FileOutputStream outputStream = null;
+
                         try {
                             outputStream = new FileOutputStream(file);
                             DropboxAPI.DropboxFileInfo info = mDBApi.getFile("/power1.xls", null, outputStream, null);
                             Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
-                        }catch(Exception e){
-                            Log.e("Exception", "Yes");
+                        }catch(DropboxException d){
+                            d.printStackTrace();
+                            Log.e("Download DropboxExcept","Yes");
+                        } catch(UnresolvedAddressException e){
+                            Log.e("UnresolvedException","Yes");
+                        } catch(FileNotFoundException e){
+                            Log.e("FileNotFoundException","Yes");
+                        } catch (IOException e){
+                            e.printStackTrace();
+                            Log.e("Download IOException","Yes");
                         }
-                        try{
+                        catch(Exception e){
+                            Log.e("Exception","Yes");
+                            e.printStackTrace();
+                        }*/
+
+                        downloadFiles(rootView.findViewById(R.id.readResults));
+
+
+                      /*  try{
 
                             //Open excel file
                             AssetManager am = getActivity().getAssets();
@@ -264,7 +283,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                         }catch(Exception e){
                             Log.e("Read exception","Yes");
                         }
-                        beacon.beaconHashMap=beaconHashMap;
+                        beacon.beaconHashMap=beaconHashMap;*/
 
 
 
@@ -369,6 +388,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                             }
                         uploadFiles(rootView.findViewById(R.id.recordReadings));
 
+
                         /*try {
                             File file2 = new File(sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls");
 
@@ -398,7 +418,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         return rootView;
     }
 
-    @Override
+  @Override
     public void onResume() {
         super.onResume();
 
@@ -463,56 +483,80 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public void bluetoothIsNotEnabled() {
         Toast.makeText(getActivity(),"Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
     }
-    /*
+
+   /*
      Asynchronous method to upload any file to dropbox*/
-    public class Upload extends AsyncTask<String, Void, String> {
+    public class Upload extends AsyncTask<Void, Void, String> {
 
-        protected void onPreExecute(){}
+        protected void onPreExecute(){
+            Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
+            Log.e("OnPreExecute","yes");
+        }
 
-    protected String doInBackground(String... arg0) {
+    protected String doInBackground(Void... arg0) {
 
         DropboxAPI.Entry response = null;
 
-        try {
 
             // Define path of file to be upload
             File sdCard = Environment.getExternalStorageDirectory();
-            File file = new File(sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls");
-            FileInputStream inputStream = new FileInputStream(file);
+            String filePath=sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls";
+            File file = new File(filePath);
+            FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
 
-            // put the file to dropbox
-            Log.e("Before upload", "Here");
-            response = mDBApi.putFile("/sensorReadings.xls", inputStream,
-                    file.length(), null, null);
-            Log.e("After upload", "Here");
-           // Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
 
         } catch (IOException e){
 
             e.printStackTrace();
             Log.e("Upload IOException","Yes");
-        } catch(DropboxException d){
-            d.printStackTrace();
-            Log.e("Upload DropboxException","Yes");
         } catch(UnresolvedAddressException e){
             Log.e("UnresolvedException","Yes");
         } catch(Exception e){
-            Log.e("UnresolvedException","Yes");
+            Log.e("Exception","Yes");
+        }
+
+        try{
+            Log.e("doInBackground","1");
+            // put the file to dropbox
+            //Log.e("Before upload", "Here");
+          /*  try {
+                Thread.sleep(3000);
+
+            }catch (Exception e){
+                Log.e("Exception","Sleep");
+                e.printStackTrace();
+            }*/
+            response = mDBApi.putFileOverwrite("/sensorReadings.xls", inputStream, file.length(), null);
+            Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+
+            //Log.e("After upload", "Here");
+            Log.e("doInBackground","2");
+            //Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+        }catch(DropboxException e){
+            Log.e("DropboxException", "Here");
+            e.printStackTrace();
         }
 
 
         return response.rev;
+        //return null;
+
     }
 
-    @Override
+
     protected void onPostExecute(String result) {
 
+        Log.e("Post execute upload","Here");
         if(result.isEmpty() == false){
 
-            //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
 
             Log.e("DbExampleLog", "The uploaded file's rev is: " + result);
-        }
+      }else{
+           Log.e("Empty","Yes");
+       }
     }
 
 
@@ -520,7 +564,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 }
 
 
-/*    *//**
+/*    *//**//**
      * Callback register method to execute the upload method
      * @param view
      */
@@ -530,23 +574,112 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     }
 
 
-
-    /**
+/**
      *  Initialize the Session of the Key pair to authenticate with dropbox
      *
      */
-    protected void initialize_session(){
 
+    protected void initialize_session(){
+        Log.e("initialize_session","1");
         // store app key and secret key
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
         AndroidAuthSession session = new AndroidAuthSession(appKeys);
+        Log.e("initialize_session","2");
         //Pass app key pair to the new DropboxAPI object
         mDBApi = new DropboxAPI<AndroidAuthSession>(session);
         // MyActivity below should be your activity class name
         // start session
-        mDBApi.getSession().startOAuth2Authentication(getContext());
+
+        mDBApi.getSession().startOAuth2Authentication(getActivity());
+
+        Log.e("initialize_session","3");
 
     }
+
+
+
+/*
+  Asynchronous method to download any file to dropbox*/
+
+    public class Download extends AsyncTask<Void, Void, String> {
+
+        protected void onPreExecute(){}
+
+        protected String doInBackground(Void... arg0) {
+
+            DropboxAPI.Entry response = null;
+
+
+
+                // Define path of file to be download
+
+                File sdCard = Environment.getExternalStorageDirectory();
+            String filePath=sdCard.getAbsolutePath() + "/newfolder/hey.txt";
+                File file = new File(filePath);
+                FileOutputStream outputStream = null;
+                // get the file from dropbox
+                try {
+                    Log.e("Trying download","1");
+                    outputStream = new FileOutputStream(file);
+                    Log.e("Trying download","2");
+                    DropboxAPI.DropboxFileInfo info = mDBApi.getFile("hey.txt", null, outputStream, null);
+
+                    Log.e("Trying download","3");
+                    Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+                }catch(DropboxException d){
+                    d.printStackTrace();
+                    Log.e("Download DropboxExcept","Yes");
+                } catch(UnresolvedAddressException e){
+                    Log.e("UnresolvedException","Yes");
+                } catch(FileNotFoundException e){
+                    Log.e("FileNotFoundException","Yes");
+                } catch (IOException e){
+                    e.printStackTrace();
+                    Log.e("Download IOException","Yes");
+                }
+                catch(Exception e){
+                    Log.e("Exception","Yes");
+                    e.printStackTrace();
+                }
+
+
+
+
+            return response.rev;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            if(result.isEmpty() == false){
+
+                //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+
+                Log.e("DbExampleLog", "The downloaded file's rev is: " + result);
+            }
+        }
+
+
+
+    }
+
+
+
+/*    *//*
+*/
+/**
+     * Callback register method to execute the download method
+     * @param view
+     */
+
+    public void downloadFiles(View view){
+
+        new Download().execute();
+    }
+
+
+
+
 
 
 }
