@@ -39,6 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.UnknownServiceException;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -603,18 +604,22 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
     public class Download extends AsyncTask<Void, Void, String> {
 
-        protected void onPreExecute(){}
+        protected void onPreExecute(){
+            Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
+            Log.e("OnPreExecute","yes");
+
+        }
 
         protected String doInBackground(Void... arg0) {
 
-            DropboxAPI.Entry response = null;
+            //DropboxAPI.Entry response = null;
 
 
 
                 // Define path of file to be download
 
                 File sdCard = Environment.getExternalStorageDirectory();
-            String filePath=sdCard.getAbsolutePath() + "/newfolder/hey.txt";
+            String filePath=sdCard.getAbsolutePath() + "/newfolder/power1.xls";
                 File file = new File(filePath);
                 FileOutputStream outputStream = null;
                 // get the file from dropbox
@@ -622,13 +627,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     Log.e("Trying download","1");
                     outputStream = new FileOutputStream(file);
                     Log.e("Trying download","2");
-                    DropboxAPI.DropboxFileInfo info = mDBApi.getFile("hey.txt", null, outputStream, null);
 
-                    Log.e("Trying download","3");
-                    Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
-                }catch(DropboxException d){
-                    d.printStackTrace();
-                    Log.e("Download DropboxExcept","Yes");
                 } catch(UnresolvedAddressException e){
                     Log.e("UnresolvedException","Yes");
                 } catch(FileNotFoundException e){
@@ -642,10 +641,25 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     e.printStackTrace();
                 }
 
+            DropboxAPI.DropboxFileInfo info=null;
 
+            try{
+                info = mDBApi.getFile("power1.xls", null, outputStream, null);
 
-
-            return response.rev;
+                Log.e("Trying download","3");
+                //response.rev=info.getMetadata().rev;
+              Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+               // Log.e("DbExampleLog", "The file's rev is: " + response.rev);
+            }catch(DropboxException d){
+                d.printStackTrace();
+                Log.e("Download DropboxExcept","Yes");
+            }catch(Exception e) {
+                Log.e("Exception for download", "Here");
+                e.printStackTrace();
+            }
+            //Log.e("response.rev",response.rev);
+           // return response.rev;
+            return info.getMetadata().rev;
         }
 
         @Override
