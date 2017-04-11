@@ -21,6 +21,7 @@ import java.util.UUID;
 public class BeaconDetailReduced extends Activity implements BeaconConfigurationListener {
 public SBeacon sBeacon;
 public int beaconListIndex=0;
+public boolean globalAuth=false;
 public List<Beacon> beaconList;
 public HashMap<String,Integer> beaconHashMap;
 
@@ -45,17 +46,24 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onConnect(boolean connected, boolean authenticated) {
+        Log.e("Connect", "connected:" + connected + " authenticated:" + authenticated);
 
-        sBeacon.alert(true,true);
-        Log.e("Beacon","Lights?");
+        if(connected && authenticated){
+            globalAuth=true;
+            sBeacon.alert(true, true);
+            Log.e("Beacon", "Lights?");
 
-        //get SID and corresponding power from hashmap
-        String key=sBeacon.getsId();
-        int power= beaconHashMap.get(key);
-        sBeacon.setIntervalTxPower((byte)-5,(byte)power,(float)1,(float)1);
-        Log.e("Beacon","Power");
+            //get SID and corresponding power from hashmap
+            String key = sBeacon.getsId();
+            int power = beaconHashMap.get(key);
+            sBeacon.setIntervalTxPower((byte) -5, (byte) power, (float) 1, (float) 1);
+            Log.e("Beacon", "Power");
 
-
+        }else{
+            globalAuth=false;
+            Log.e("Couldn't connect","Boohoo");
+            sBeacon.connect(getParent(),null);
+        }
 
     }
 
@@ -68,15 +76,20 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onDisconnect() {
-    Log.e("Beacon","Disconnect");
-        if(beaconListIndex<(beaconList.size()-1)){
-            beaconListIndex++;
-            Log.e("onDisconnect","Incrementing list index");
-            //SystemClock.sleep(5000);
-            beaconBirth();
+        //if authorized you are allowed to disconnect otherwise you have to keep trying to connect!
+        if(globalAuth) {
+            Log.e("Beacon", "Disconnect");
+            if (beaconListIndex < (beaconList.size() - 1)) {
+                beaconListIndex++;
+                Log.e("onDisconnect", "Incrementing list index");
+                //SystemClock.sleep(5000);
+                beaconBirth();
+            } else {
+                Log.e("onDisconnect", "Done");
+                beaconListIndex = 0;
+            }
         }else{
-            Log.e("onDisconnect","Done");
-            beaconListIndex=0;
+            Log.e("Unauthorized","Yes");
         }
 
 
@@ -84,6 +97,10 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onCommandToNotConnectedBeacon() {
+        Log.e("NotConnectedBeacon","The beacon is not connected!");
+       // Log.e("Will send command again","now");
+
+
 
     }
 
@@ -104,6 +121,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onFailedToSetConnectionSettings() {
+        Log.e("FailedToSet","Connection settings");
 
     }
 
@@ -230,6 +248,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onFailedToSetFrameTypeIntervalTxPower() {
+        Log.e("Failed to set","FrameTypeIntervalTxPower");
 
     }
 
@@ -250,6 +269,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onFailedToSetFrameTypeConnectionRates() {
+        Log.e("Failed to set","FrameTypeConnectionRates");
 
     }
 
@@ -270,6 +290,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onFailedToSetAdvertisementSettings() {
+        Log.e("Failed to set","AdvertisementSettings");
 
     }
 

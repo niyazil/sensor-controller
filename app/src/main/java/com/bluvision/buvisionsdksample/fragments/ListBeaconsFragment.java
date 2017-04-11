@@ -260,31 +260,8 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                             //Open excel file
                             AssetManager am = getActivity().getAssets();
                             InputStream is = am.open("power1.xls");
-                            Workbook wb=Workbook.getWorkbook(is);
-                            Sheet sheet=wb.getSheet(0);
-                            int numRows=sheet.getRows();
-                            int numCol=sheet.getColumns();
-
-                            //Read SID and read power allocation from file and store
-                            String excelContents="";
-                            for(int row=0;row<numRows;row++){
-                                Cell cell=sheet.getCell(0,row);
-                                String currentSID=cell.getContents();
-                                cell=sheet.getCell(1,row);
-                                String currentPower= cell.getContents();
-
-                                //Fill in beaconHashMap with beacon SIDs and allocated powers
-
-                                beaconHashMap.put(currentSID,Integer.valueOf(currentPower));
-                                Log.e("Current SID and power",String.valueOf(beaconHashMap.get(currentSID)));
-
-                            }
-
-
-                        }catch(Exception e){
-                            Log.e("Read exception","Yes");
-                        }
-                        beacon.beaconHashMap=beaconHashMap;*/
+                              Workbook wb=Workbook.getWorkbook(is);
+                            */
 
 
 
@@ -670,6 +647,49 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                 //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
 
                 Log.e("DbExampleLog", "The downloaded file's rev is: " + result);
+
+                File sdCard = Environment.getExternalStorageDirectory();
+                String filePath=sdCard.getAbsolutePath() + "/newfolder/power1.xls";
+                File file = new File(filePath);
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(file);
+
+
+                } catch (IOException e){
+
+                    e.printStackTrace();
+                    Log.e("Upload IOException","Yes");
+                } catch(UnresolvedAddressException e){
+                    Log.e("UnresolvedException","Yes");
+                } catch(Exception e){
+                    Log.e("Exception","Yes");
+                }
+                try {
+                    Workbook wb = Workbook.getWorkbook(inputStream);
+
+                    Sheet sheet=wb.getSheet(0);
+                    int numRows=sheet.getRows();
+                    int numCol=sheet.getColumns();
+
+                    //Read SID and read power allocation from file and store
+                    String excelContents="";
+                    for(int row=0;row<numRows;row++) {
+                        Cell cell = sheet.getCell(0, row);
+                        String currentSID = cell.getContents();
+                        cell = sheet.getCell(1, row);
+                        String currentPower = cell.getContents();
+
+                        //Fill in beaconHashMap with beacon SIDs and allocated powers
+
+                        beaconHashMap.put(currentSID, Integer.valueOf(currentPower));
+                        Log.e("Current SID and power", String.valueOf(beaconHashMap.get(currentSID)));
+
+                    }
+                    beacon.beaconHashMap=beaconHashMap;
+                }catch(Exception e){
+                    Log.e("Reading downloaded file","Exception");
+                }
             }
         }
 
