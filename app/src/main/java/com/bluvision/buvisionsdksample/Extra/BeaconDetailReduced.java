@@ -39,10 +39,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     }
 
-    @Override
-    public void onFailedToUpdateFirmware(int i) {
 
-    }
 
     @Override
     public void onConnect(boolean connected, boolean authenticated) {
@@ -62,7 +59,7 @@ public HashMap<String,Integer> beaconHashMap;
         }else{
             globalAuth=false;
             Log.e("Couldn't connect","Boohoo");
-            sBeacon.connect(getParent(),null);
+            //sBeacon.connect(getParent(),null);
         }
 
     }
@@ -74,7 +71,7 @@ public HashMap<String,Integer> beaconHashMap;
 
     }
 
-    @Override
+    @Override //I think it will already have disconnected at this point
     public void onDisconnect() {
         //if authorized you are allowed to disconnect otherwise you have to keep trying to connect!
         if(globalAuth) {
@@ -90,6 +87,7 @@ public HashMap<String,Integer> beaconHashMap;
             }
         }else{
             Log.e("Unauthorized","Yes");
+            sBeacon.connect(getParent(),null);
         }
 
 
@@ -98,7 +96,7 @@ public HashMap<String,Integer> beaconHashMap;
     @Override
     public void onCommandToNotConnectedBeacon() {
         Log.e("NotConnectedBeacon","The beacon is not connected!");
-       // Log.e("Will send command again","now");
+
 
 
 
@@ -311,6 +309,10 @@ public HashMap<String,Integer> beaconHashMap;
 
     @Override
     public void onUpdateFirmware(double v) {
+
+    }
+    @Override
+    public void onFailedToUpdateFirmware(int i) {
 
     }
 

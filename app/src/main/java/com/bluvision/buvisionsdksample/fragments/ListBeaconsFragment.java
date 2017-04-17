@@ -162,39 +162,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
                         if (scaning) {
                             stopScan();
-                           // mBeaconManager.stop();
-//                            SBeacon beacon0=(SBeacon) beaconList.get(0);
-//                            SBeacon beacon1=(SBeacon) beaconList.get(1);
-//                            Log.e("First beacon",String.valueOf(beacon0.getsId()));
-//                            Log.e("Second beacon",String.valueOf(beacon1.getsId()));
 
-                            /*BeaconDetailReduced beacon0=new BeaconDetailReduced();
-                            beacon0.sBeacon=(SBeacon) beaconList.get(0);
-                            Log.e("First beacon",String.valueOf(beacon0.sBeacon.getsId()));
-                            beacon0.sBeacon.setBeaconConfigurationListener(beacon0);
-
-                            //Connect
-                            beacon0.sBeacon.connect(getActivity(),null);*/
-
-                            //Disconnect
-                            /*beacon0.sBeacon.disconnect();
-                            SystemClock.sleep(10000);*/
-
-                            /*BeaconDetailReduced beacon1=new BeaconDetailReduced();
-                            beacon1.sBeacon=(SBeacon) beaconList.get(1);
-                            Log.e("Second beacon",String.valueOf(beacon1.sBeacon.getsId()));
-                            beacon1.sBeacon.setBeaconConfigurationListener(beacon1);
-
-                            //Connect
-                            beacon1.sBeacon.connect(getActivity(),null);
-                            //Disconnect
-                            //beacon1.sBeacon.disconnect();*/
-
-
-                            //Assign second beacon to the same variable
-                           /* beacon0.sBeacon=(SBeacon) beaconList.get(1);
-                            //Connect
-                            beacon0.sBeacon.connect(getActivity(),null);*/
                             beacon.beaconList=beaconList;
                             beacon.beaconBirth();
                         }
@@ -227,44 +195,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     @Override
                     public void onClick(View view) {
                     Log.e("Does it work?","Yes");
-
-                      /*  File sdCard = Environment.getExternalStorageDirectory();
-                        File file = new File(sdCard.getAbsolutePath() + "/newfolder/power1.xls");
-                        FileOutputStream outputStream = null;
-
-                        try {
-                            outputStream = new FileOutputStream(file);
-                            DropboxAPI.DropboxFileInfo info = mDBApi.getFile("/power1.xls", null, outputStream, null);
-                            Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
-                        }catch(DropboxException d){
-                            d.printStackTrace();
-                            Log.e("Download DropboxExcept","Yes");
-                        } catch(UnresolvedAddressException e){
-                            Log.e("UnresolvedException","Yes");
-                        } catch(FileNotFoundException e){
-                            Log.e("FileNotFoundException","Yes");
-                        } catch (IOException e){
-                            e.printStackTrace();
-                            Log.e("Download IOException","Yes");
-                        }
-                        catch(Exception e){
-                            Log.e("Exception","Yes");
-                            e.printStackTrace();
-                        }*/
-
                         downloadFiles(rootView.findViewById(R.id.readResults));
-
-
-                      /*  try{
-
-                            //Open excel file
-                            AssetManager am = getActivity().getAssets();
-                            InputStream is = am.open("power1.xls");
-                              Workbook wb=Workbook.getWorkbook(is);
-                            */
-
-
-
 
                         }
 
@@ -365,20 +296,6 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                                 Log.e("Where are we?","8");
                             }
                         uploadFiles(rootView.findViewById(R.id.recordReadings));
-
-
-                        /*try {
-                            File file2 = new File(sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls");
-
-                            FileInputStream inputStream = new FileInputStream(file2);
-                            DropboxAPI.Entry response = mDBApi.putFile("/sensorReadings.xls", inputStream,file2.length(), null, null);
-                        Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
-                        }catch(Exception e){
-                            Log.e("Upload exception","Yes");
-                        }*/
-
-
-
                     }
                 });
 
@@ -497,15 +414,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
         try{
             Log.e("doInBackground","1");
-            // put the file to dropbox
-            //Log.e("Before upload", "Here");
-          /*  try {
-                Thread.sleep(3000);
 
-            }catch (Exception e){
-                Log.e("Exception","Sleep");
-                e.printStackTrace();
-            }*/
             response = mDBApi.putFileOverwrite("/sensorReadings.xls", inputStream, file.length(), null);
             Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
 
