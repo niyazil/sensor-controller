@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="toggle_label">START</string>
+   <string name="toggle_turn_on">Start</string>
+    <string name="toggle_turn_off">Stop</string>
 </resources>

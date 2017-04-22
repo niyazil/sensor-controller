@@ -30,9 +30,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -80,14 +82,12 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     private ListView lstBeacons;
 
     private boolean scaning = false;
-    private BeaconDetailReduced beacon=new BeaconDetailReduced();
-    private HashMap<String,Integer> beaconHashMap = new HashMap<>();
+    private BeaconDetailReduced beacon = new BeaconDetailReduced();
+    private HashMap<String, Integer> beaconHashMap = new HashMap<>();
 
     final static private String APP_KEY = "m4256mepdf15tpv";
     final static private String APP_SECRET = "dlduhmug8qy77q5";
     private DropboxAPI<AndroidAuthSession> mDBApi;
-
-
 
 
     @Override
@@ -116,22 +116,19 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
 
 
-
 // callback method
-        Log.e("onCreate","Before initializing session");
+        Log.e("onCreate", "Before initializing session");
         initialize_session();
-         Log.e("onCreate","After initializing session");
-
+        Log.e("onCreate", "After initializing session");
 
 
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
 
         setRetainInstance(true);
 
@@ -163,15 +160,32 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                         if (scaning) {
                             stopScan();
 
-                            beacon.beaconList=beaconList;
+                            beacon.beaconList = beaconList;
                             beacon.beaconBirth();
                         }
 
                     }
                 }
+
+
         );
 
+        final ToggleButton toggle = (ToggleButton) rootView.findViewById(R.id.toggleButton);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    Log.e("Toggle status", "Enabled");
 
+                    recordDataSet(rootView.findViewById(R.id.toggleButton));
+
+
+                } else {
+                    // The toggle is disabled
+                    Log.e("Toggle status", "Disabled");
+                }
+            }
+        });
 
 
         mBeaconsListAdapter = new BeaconsListAdapter(getActivity(), beaconList);
@@ -190,27 +204,27 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         });
 
 
-        ((Button)rootView.findViewById(R.id.readResults)).setOnClickListener(
+        ((Button) rootView.findViewById(R.id.readResults)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                    Log.e("Does it work?","Yes");
+                        Log.e("Does it work?", "Yes");
                         downloadFiles(rootView.findViewById(R.id.readResults));
 
-                        }
-
                     }
-                );
 
-        ((Button)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
+                }
+        );
+
+        ((Button) rootView.findViewById(R.id.recordReadings)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
 
-                        String Fnamexls="sensorReadings"  + ".xls";
+                        String Fnamexls = "sensorReadings" + ".xls";
                         File sdCard = Environment.getExternalStorageDirectory();
-                        File directory = new File (sdCard.getAbsolutePath() + "/newfolder");
+                        File directory = new File(sdCard.getAbsolutePath() + "/newfolder");
                         directory.mkdirs();
                         File file = new File(directory, Fnamexls);
 
@@ -220,81 +234,79 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
                         WritableWorkbook workbook;
 
-                        Log.e("Where are we?","1");
+                        Log.e("Where are we?", "1");
 
 
+                        try {
+                            int a = 1;
+                            workbook = Workbook.createWorkbook(file, wbSettings);
+                            //workbook.createSheet("Report", 0);
+                            WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+                            Label label0 = new Label(0, 0, "SID");
+                            Label label1 = new Label(1, 0, "Temperature");
+                            Label label2 = new Label(2, 0, "RSSI");
+                            Label label3 = new Label(3, 0, "Timestamp");
 
                             try {
-                                int a = 1;
-                                workbook = Workbook.createWorkbook(file, wbSettings);
-                                //workbook.createSheet("Report", 0);
-                                WritableSheet sheet = workbook.createSheet("First Sheet", 0);
-                                Label label0 = new Label(0, 0, "SID");
-                                Label label1 = new Label(1, 0, "Temperature");
-                                Label label2 = new Label(2, 0, "RSSI");
-                                Label label3 = new Label(3, 0, "Timestamp");
-
-                                try{
-                                    sheet.addCell(label0);
-                                    sheet.addCell(label1);
-                                    sheet.addCell(label2);
-                                    sheet.addCell(label3);
-                                }catch(Exception e){
-                                    Log.e("Headings","Couldn't add");
-                                }
+                                sheet.addCell(label0);
+                                sheet.addCell(label1);
+                                sheet.addCell(label2);
+                                sheet.addCell(label3);
+                            } catch (Exception e) {
+                                Log.e("Headings", "Couldn't add");
+                            }
 
 
-                                for(int i=0;i<beaconList.size();i++){
+                            for (int i = 0; i < beaconList.size(); i++) {
                                 //get SID and temperature of currently selected beacon
-                                SBeacon currentBeacon=(SBeacon) beaconList.get(i);
-                                String currentSID=currentBeacon.getsId();
-                                String currentTemperature=String.valueOf(currentBeacon.getTemperature());
-                                String currentRSSI=String.valueOf(currentBeacon.getRssi());
+                                SBeacon currentBeacon = (SBeacon) beaconList.get(i);
+                                String currentSID = currentBeacon.getsId();
+                                String currentTemperature = String.valueOf(currentBeacon.getTemperature());
+                                String currentRSSI = String.valueOf(currentBeacon.getRssi());
                                 String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                                Log.e("Get SID and temperature",currentSID+": "+currentTemperature);
+                                Log.e("Get SID and temperature", currentSID + ": " + currentTemperature);
 
 
-                                Label label4 = new Label(0, i+1, currentSID);
-                                Label label5 = new Label(1, i+1, currentTemperature);
-                                Label label6 = new Label(2, i+1, currentRSSI);
-                                Label label7 = new Label(3, i+1, currentDateTimeString);
-                                Log.e("Current row",String.valueOf(i+1));
+                                Label label4 = new Label(0, i + 1, currentSID);
+                                Label label5 = new Label(1, i + 1, currentTemperature);
+                                Label label6 = new Label(2, i + 1, currentRSSI);
+                                Label label7 = new Label(3, i + 1, currentDateTimeString);
+                                Log.e("Current row", String.valueOf(i + 1));
 
-                                Log.e("Where are we?","2");
+                                Log.e("Where are we?", "2");
                                 try {
                                     sheet.addCell(label4);
                                     sheet.addCell(label5);
                                     sheet.addCell(label6);
                                     sheet.addCell(label7);
-                                    Log.e("Where are we?","3");
+                                    Log.e("Where are we?", "3");
                                 } catch (RowsExceededException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
-                                    Log.e("Where are we?","4");
+                                    Log.e("Where are we?", "4");
                                 } catch (WriteException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
-                                    Log.e("Where are we?","5");
+                                    Log.e("Where are we?", "5");
                                 }
 
 
+                            }
 
-                                }
-
-                                workbook.write();
-                                try {
-                                    workbook.close();
-                                    Log.e("Where are we?","6");
-                                } catch (WriteException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                    Log.e("Where are we?","7");
-                                }
-                            }catch (Exception e) {
+                            workbook.write();
+                            try {
+                                workbook.close();
+                                Log.e("Where are we?", "6");
+                            } catch (WriteException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
-                                Log.e("Where are we?","8");
+                                Log.e("Where are we?", "7");
                             }
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            Log.e("Where are we?", "8");
+                        }
                         uploadFiles(rootView.findViewById(R.id.recordReadings));
                     }
                 });
@@ -313,7 +325,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         return rootView;
     }
 
-  @Override
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -327,7 +339,6 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                 Log.i("DbAuthLog", "Error authenticating", e);
             }
         }
-
 
 
     }
@@ -364,7 +375,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
             @Override
             public void run() {
 
-                if(beacon!=null) {
+                if (beacon != null) {
                     beaconList.add(beacon);
                     mBeaconsListAdapter.notifyDataSetChanged();
                 }
@@ -376,102 +387,103 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
     @Override
     public void bluetoothIsNotEnabled() {
-        Toast.makeText(getActivity(),"Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Please activate your Bluetooth connection", Toast.LENGTH_LONG).show();
     }
 
-   /*
-     Asynchronous method to upload any file to dropbox*/
+    /*
+      Asynchronous method to upload any file to dropbox*/
     public class Upload extends AsyncTask<Void, Void, String> {
 
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
-            Log.e("OnPreExecute","yes");
+            Log.e("OnPreExecute", "yes");
         }
 
-    protected String doInBackground(Void... arg0) {
+        protected String doInBackground(Void... arg0) {
 
-        DropboxAPI.Entry response = null;
+            DropboxAPI.Entry response = null;
 
 
             // Define path of file to be upload
             File sdCard = Environment.getExternalStorageDirectory();
-            String filePath=sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls";
+            String filePath = sdCard.getAbsolutePath() + "/newfolder/sensorReadings.xls";
             File file = new File(filePath);
             FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
+            try {
+                inputStream = new FileInputStream(file);
 
 
-        } catch (IOException e){
+            } catch (IOException e) {
 
-            e.printStackTrace();
-            Log.e("Upload IOException","Yes");
-        } catch(UnresolvedAddressException e){
-            Log.e("UnresolvedException","Yes");
-        } catch(Exception e){
-            Log.e("Exception","Yes");
+                e.printStackTrace();
+                Log.e("Upload IOException", "Yes");
+            } catch (UnresolvedAddressException e) {
+                Log.e("UnresolvedException", "Yes");
+            } catch (Exception e) {
+                Log.e("Exception", "Yes");
+            }
+
+            try {
+                Log.e("doInBackground", "1");
+
+                response = mDBApi.putFileOverwrite("/sensorReadings.xls", inputStream, file.length(), null);
+                Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+
+                //Log.e("After upload", "Here");
+                Log.e("doInBackground", "2");
+                //Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+            } catch (DropboxException e) {
+                Log.e("DropboxException", "Here");
+                e.printStackTrace();
+            }
+
+
+            return response.rev;
+            //return null;
+
         }
 
-        try{
-            Log.e("doInBackground","1");
 
-            response = mDBApi.putFileOverwrite("/sensorReadings.xls", inputStream, file.length(), null);
-            Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
+        protected void onPostExecute(String result) {
 
-            //Log.e("After upload", "Here");
-            Log.e("doInBackground","2");
-            //Log.e("DbExampleLog", "The uploaded file's rev is: " + response.rev);
-        }catch(DropboxException e){
-            Log.e("DropboxException", "Here");
-            e.printStackTrace();
+            Log.e("Post execute upload", "Here");
+            if (result.isEmpty() == false) {
+
+                Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+
+                Log.e("DbExampleLog", "The uploaded file's rev is: " + result);
+            } else {
+                Log.e("Empty", "Yes");
+            }
         }
 
-
-        return response.rev;
-        //return null;
 
     }
 
 
-    protected void onPostExecute(String result) {
+/*    *//**/
 
-        Log.e("Post execute upload","Here");
-        if(result.isEmpty() == false){
-
-        Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-
-            Log.e("DbExampleLog", "The uploaded file's rev is: " + result);
-      }else{
-           Log.e("Empty","Yes");
-       }
-    }
-
-
-
-}
-
-
-/*    *//**//**
+    /**
      * Callback register method to execute the upload method
+     *
      * @param view
      */
-    public void uploadFiles(View view){
+    public void uploadFiles(View view) {
 
         new Upload().execute();
     }
 
 
-/**
-     *  Initialize the Session of the Key pair to authenticate with dropbox
-     *
+    /**
+     * Initialize the Session of the Key pair to authenticate with dropbox
      */
 
-    protected void initialize_session(){
-        Log.e("initialize_session","1");
+    protected void initialize_session() {
+        Log.e("initialize_session", "1");
         // store app key and secret key
         AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
         AndroidAuthSession session = new AndroidAuthSession(appKeys);
-        Log.e("initialize_session","2");
+        Log.e("initialize_session", "2");
         //Pass app key pair to the new DropboxAPI object
         mDBApi = new DropboxAPI<AndroidAuthSession>(session);
         // MyActivity below should be your activity class name
@@ -479,7 +491,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
         mDBApi.getSession().startOAuth2Authentication(getActivity());
 
-        Log.e("initialize_session","3");
+        Log.e("initialize_session", "3");
 
     }
 
@@ -490,9 +502,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
     public class Download extends AsyncTask<Void, Void, String> {
 
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
-            Log.e("OnPreExecute","yes");
+            Log.e("OnPreExecute", "yes");
 
         }
 
@@ -501,89 +513,87 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
             //DropboxAPI.Entry response = null;
 
 
+            // Define path of file to be download
 
-                // Define path of file to be download
+            File sdCard = Environment.getExternalStorageDirectory();
+            String filePath = sdCard.getAbsolutePath() + "/newfolder/power1.xls";
+            File file = new File(filePath);
+            FileOutputStream outputStream = null;
+            // get the file from dropbox
+            try {
+                Log.e("Trying download", "1");
+                outputStream = new FileOutputStream(file);
+                Log.e("Trying download", "2");
 
-                File sdCard = Environment.getExternalStorageDirectory();
-            String filePath=sdCard.getAbsolutePath() + "/newfolder/power1.xls";
-                File file = new File(filePath);
-                FileOutputStream outputStream = null;
-                // get the file from dropbox
-                try {
-                    Log.e("Trying download","1");
-                    outputStream = new FileOutputStream(file);
-                    Log.e("Trying download","2");
+            } catch (UnresolvedAddressException e) {
+                Log.e("UnresolvedException", "Yes");
+            } catch (FileNotFoundException e) {
+                Log.e("FileNotFoundException", "Yes");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e("Download IOException", "Yes");
+            } catch (Exception e) {
+                Log.e("Exception", "Yes");
+                e.printStackTrace();
+            }
 
-                } catch(UnresolvedAddressException e){
-                    Log.e("UnresolvedException","Yes");
-                } catch(FileNotFoundException e){
-                    Log.e("FileNotFoundException","Yes");
-                } catch (IOException e){
-                    e.printStackTrace();
-                    Log.e("Download IOException","Yes");
-                }
-                catch(Exception e){
-                    Log.e("Exception","Yes");
-                    e.printStackTrace();
-                }
+            DropboxAPI.DropboxFileInfo info = null;
 
-            DropboxAPI.DropboxFileInfo info=null;
-
-            try{
+            try {
                 info = mDBApi.getFile("power1.xls", null, outputStream, null);
 
-                Log.e("Trying download","3");
+                Log.e("Trying download", "3");
                 //response.rev=info.getMetadata().rev;
-              Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
-               // Log.e("DbExampleLog", "The file's rev is: " + response.rev);
-            }catch(DropboxException d){
+                Log.e("DbExampleLog", "The file's rev is: " + info.getMetadata().rev);
+                // Log.e("DbExampleLog", "The file's rev is: " + response.rev);
+            } catch (DropboxException d) {
                 d.printStackTrace();
-                Log.e("Download DropboxExcept","Yes");
-            }catch(Exception e) {
+                Log.e("Download DropboxExcept", "Yes");
+            } catch (Exception e) {
                 Log.e("Exception for download", "Here");
                 e.printStackTrace();
             }
             //Log.e("response.rev",response.rev);
-           // return response.rev;
+            // return response.rev;
             return info.getMetadata().rev;
         }
 
         @Override
         protected void onPostExecute(String result) {
 
-            if(result.isEmpty() == false){
+            if (result.isEmpty() == false) {
 
                 //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
 
                 Log.e("DbExampleLog", "The downloaded file's rev is: " + result);
 
                 File sdCard = Environment.getExternalStorageDirectory();
-                String filePath=sdCard.getAbsolutePath() + "/newfolder/power1.xls";
+                String filePath = sdCard.getAbsolutePath() + "/newfolder/power1.xls";
                 File file = new File(filePath);
                 FileInputStream inputStream = null;
                 try {
                     inputStream = new FileInputStream(file);
 
 
-                } catch (IOException e){
+                } catch (IOException e) {
 
                     e.printStackTrace();
-                    Log.e("Upload IOException","Yes");
-                } catch(UnresolvedAddressException e){
-                    Log.e("UnresolvedException","Yes");
-                } catch(Exception e){
-                    Log.e("Exception","Yes");
+                    Log.e("Upload IOException", "Yes");
+                } catch (UnresolvedAddressException e) {
+                    Log.e("UnresolvedException", "Yes");
+                } catch (Exception e) {
+                    Log.e("Exception", "Yes");
                 }
                 try {
                     Workbook wb = Workbook.getWorkbook(inputStream);
 
-                    Sheet sheet=wb.getSheet(0);
-                    int numRows=sheet.getRows();
-                    int numCol=sheet.getColumns();
+                    Sheet sheet = wb.getSheet(0);
+                    int numRows = sheet.getRows();
+                    int numCol = sheet.getColumns();
 
                     //Read SID and read power allocation from file and store
-                    String excelContents="";
-                    for(int row=0;row<numRows;row++) {
+                    String excelContents = "";
+                    for (int row = 0; row < numRows; row++) {
                         Cell cell = sheet.getCell(0, row);
                         String currentSID = cell.getContents();
                         cell = sheet.getCell(1, row);
@@ -595,34 +605,159 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                         Log.e("Current SID and power", String.valueOf(beaconHashMap.get(currentSID)));
 
                     }
-                    beacon.beaconHashMap=beaconHashMap;
-                }catch(Exception e){
-                    Log.e("Reading downloaded file","Exception");
+                    beacon.beaconHashMap = beaconHashMap;
+                } catch (Exception e) {
+                    Log.e("Reading downloaded file", "Exception");
                 }
             }
         }
 
 
-
     }
 
 
 
+
+
+
+
+
+    /*
+  Asynchronous method to record dataset*/
+
+    public class Record extends AsyncTask<Void, Void, String> {
+
+        protected void onPreExecute() {
+            Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
+            Log.e("OnPreExecute", "yes");
+
+        }
+
+        protected String doInBackground(Void... args) {
+
+            String Fnamexls = "dataSet" + ".xls";
+            File sdCard = Environment.getExternalStorageDirectory();
+            File directory = new File(sdCard.getAbsolutePath() + "/newfolder");
+            directory.mkdirs();
+            File file = new File(directory, Fnamexls);
+
+            WorkbookSettings wbSettings = new WorkbookSettings();
+
+            wbSettings.setLocale(new Locale("en", "EN"));
+
+            WritableWorkbook workbook;
+
+            Log.e("Where are we?", "1");
+            try {
+                int a = 1;
+                workbook = Workbook.createWorkbook(file, wbSettings);
+                //workbook.createSheet("Report", 0);
+                WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+                Label label1 = new Label(0, 0, "Temperature");
+                Label label2 = new Label(1, 0, "RSSI");
+                Label label3 = new Label(2, 0, "Timestamp");
+
+
+                sheet.addCell(label1);
+                sheet.addCell(label2);
+                sheet.addCell(label3);
+                // find the beacon we need
+
+
+                for (int i = 0; i < 10; i++) {
+
+
+
+
+
+                    //get SID and temperature of currently selected beacon
+                    mBeaconManager.stopScan();
+                    mBeaconManager.startScan();
+
+                    SBeacon beacon = null;
+                    SBeacon currentBeacon = null;
+                    for (int j = 0; j < beaconList.size(); j++) {
+                        beacon = (SBeacon) beaconList.get(j);
+                        if (beacon.getsId().equals("A127870322513F6A")) {
+                            currentBeacon = beacon;
+                        }
+                    }
+
+
+                    Log.e("Current SID", currentBeacon.getsId());
+                    Log.e("describeContents()",String.valueOf(currentBeacon.describeContents()));
+                    Log.e("getScanRecord",String.valueOf(currentBeacon.getScanRecord()));
+                    Log.e("Temp from scanRecord",String.valueOf(currentBeacon.getTemperatureFromScanRecord()));
+                    String currentTemperature = String.valueOf(currentBeacon.getTemperature());
+                    String currentRSSI = String.valueOf(currentBeacon.getRssi());
+                    String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+                    Log.e("Get SID and temperature", "A127870322513F6A" + ": " + currentTemperature);
+
+
+                    Label label5 = new Label(0, i + 1, currentTemperature);
+                    Label label6 = new Label(1, i + 1, currentRSSI);
+                    Label label7 = new Label(2, i + 1, currentDateTimeString);
+                    Log.e("Current row", String.valueOf(i + 1));
+
+                    Log.e("Where are we?", "2");
+
+                    sheet.addCell(label5);
+                    sheet.addCell(label6);
+                    sheet.addCell(label7);
+                    Log.e("Where are we?", "3");
+
+
+                    SystemClock.sleep(5000); //wait one second
+
+
+
+
+
+                    beaconList=null;
+                }
+
+                workbook.write();
+                workbook.close();
+                Log.e("Where are we?", "6");
+
+            } catch (Exception e) {
+                Log.e("Headings", "Couldn't add");
+            }
+
+            return "";
+
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+            if (result.isEmpty() == false) {
+
+            }
+
+
+        }
+    }
 /*    *//*
 */
-/**
+
+    /**
      * Callback register method to execute the download method
+     *
      * @param view
      */
 
-    public void downloadFiles(View view){
+    public void downloadFiles(View view) {
 
         new Download().execute();
     }
 
+    public void recordDataSet(View view) {
 
-
-
-
-
+        new Record().execute();
+    }
 }
+
+
+
+
+
