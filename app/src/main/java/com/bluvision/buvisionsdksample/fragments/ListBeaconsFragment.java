@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -63,6 +64,7 @@ import java.util.Date;
 import jxl.*;
 import jxl.write.*;
 import jxl.write.Label;
+import jxl.write.Number;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.biff.RowsExceededException;
@@ -248,14 +250,15 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                                 //get SID and temperature of currently selected beacon
                                 SBeacon currentBeacon=(SBeacon) beaconList.get(i);
                                 String currentSID=currentBeacon.getsId();
-                                String currentTemperature=String.valueOf(currentBeacon.getTemperature());
+                                Float currentTemperature=currentBeacon.getTemperature();
                                 String currentRSSI=String.valueOf(currentBeacon.getRssi());
                                 String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                                 Log.e("Get SID and temperature",currentSID+": "+currentTemperature);
+                                Log.e("getTemperature()",currentSID+": "+currentTemperature);
 
 
                                 Label label4 = new Label(0, i+1, currentSID);
-                                Label label5 = new Label(1, i+1, currentTemperature);
+                                Number number1 = new Number(1, i+1, currentTemperature);
                                 Label label6 = new Label(2, i+1, currentRSSI);
                                 Label label7 = new Label(3, i+1, currentDateTimeString);
                                 Log.e("Current row",String.valueOf(i+1));
@@ -263,7 +266,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                                 Log.e("Where are we?","2");
                                 try {
                                     sheet.addCell(label4);
-                                    sheet.addCell(label5);
+                                    sheet.addCell(number1);
                                     sheet.addCell(label6);
                                     sheet.addCell(label7);
                                     Log.e("Where are we?","3");
