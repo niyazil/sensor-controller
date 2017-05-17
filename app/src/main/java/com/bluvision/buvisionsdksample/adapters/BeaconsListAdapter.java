@@ -1,6 +1,7 @@
 package com.bluvision.buvisionsdksample.adapters;
 
 import com.bluvision.beeks.sdk.domainobjects.Beacon;
+import com.bluvision.beeks.sdk.domainobjects.SBeacon;
 import com.bluvision.buvisionsdksample.R;
 
 import android.content.Context;
@@ -57,10 +58,10 @@ public class BeaconsListAdapter extends BaseAdapter {
         Holder holder = new Holder();
 
         holder.tvName = (TextView) convertView.findViewById(R.id.txtName);
-        holder.tvRssi = (TextView) convertView.findViewById(R.id.txtRssi);
-        holder.txtMac = (TextView) convertView.findViewById(R.id.txtMacAddress);
+        holder.txtTemp = (TextView) convertView.findViewById(R.id.txtTemp);
+        holder.txtRSSI = (TextView) convertView.findViewById(R.id.txtRSSI);
 
-        Beacon beacon = listaData.get(position);
+        SBeacon beacon = (SBeacon) listaData.get(position);
 
         if(beacon==null){
             return null;
@@ -72,9 +73,10 @@ public class BeaconsListAdapter extends BaseAdapter {
             name = beacon.getDevice().getName();
         }
 
-        holder.tvName.setText(name);
-        holder.tvRssi.setText( String.valueOf(beacon.getRssi()));
-        holder.txtMac.setText( String.valueOf(beacon.getDevice().getAddress()));
+
+        holder.tvName.setText(beacon.getsId());
+        holder.txtTemp.setText( String.valueOf(beacon.getTemperature())+" °C");
+        holder.txtRSSI.setText( String.valueOf(beacon.getRssi())+ " dBm");
 
         return convertView;
     }
@@ -83,8 +85,8 @@ public class BeaconsListAdapter extends BaseAdapter {
     public class Holder {
 
         TextView tvName;
-        TextView tvRssi;
-        TextView txtMac;
+        TextView txtTemp;
+        TextView txtRSSI;
     }
 
 }

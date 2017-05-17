@@ -18,7 +18,7 @@
         android:text="Name of Device"/>
 
     <TextView
-        android:id="@+id/txtRssi"
+        android:id="@+id/txtTemp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -27,7 +27,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/txtMacAddress"
+        android:id="@+id/txtRSSI"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="7pt"

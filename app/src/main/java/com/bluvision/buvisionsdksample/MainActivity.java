@@ -179,11 +179,6 @@ public class MainActivity extends AppCompatActivity implements BaseFragment.Frag
     @Override
     public void onBeaconSelectedFromList(Beacon beacon) {
 
-        mBeaconDetail = (BeaconDetail) getFragment(BeaconDetail.class,true);
-        mBeaconDetail.setBeacon(beacon);
-
-        swapFragment(BeaconDetail.class,true,false);
-
 
     }
 
