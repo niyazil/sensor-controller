@@ -17,6 +17,8 @@ import com.dropbox.client2.session.AppKeyPair;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
@@ -30,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,25 +100,9 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         super.onCreate(savedInstanceState);
 
         Log.d("Foo", "onCreate ");
+        beaconManagerStartup();
 
-        mBeaconManager = ((BluvisionSampleSDKApplication) getActivity().getApplication())
-                .getBeaconManager();
 
-        // Add this class to listen when a beacon was found.
-        mBeaconManager.addBeaconListener(this);
-
-        /** Add rules to specify what type of beacons you want to discover
-         *  in this sample app we are discovering Sbeacons and IBeacons.
-         *  you can remove the ones you don't want to discover.
-         */
-        //mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
-        mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
-        mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
-        mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
-        mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
-        mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
-        mBeaconManager.addRuleRestrictionToIncludeSID("8E453771B5785ED8");
-        mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
 
 
 
@@ -128,7 +115,27 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
     }
 
+public void beaconManagerStartup(){
+    mBeaconManager = ((BluvisionSampleSDKApplication) getActivity().getApplication())
+            .getBeaconManager();
 
+    // Add this class to listen when a beacon was found.
+    mBeaconManager.addBeaconListener(this);
+
+    /** Add rules to specify what type of beacons you want to discover
+     *  in this sample app we are discovering Sbeacons and IBeacons.
+     *  you can remove the ones you don't want to discover.
+     */
+    //mBeaconManager.addRuleToIncludeScanByType(BeaconType.S_BEACON);
+    mBeaconManager.addRuleRestrictionToIncludeSID("7159F19768D2A171");
+    mBeaconManager.addRuleRestrictionToIncludeSID("A127870322513F6A");
+    mBeaconManager.addRuleRestrictionToIncludeSID("FBB44C2E84AB40E3");
+    mBeaconManager.addRuleRestrictionToIncludeSID("582A8CF7C8193BFA");
+    mBeaconManager.addRuleRestrictionToIncludeSID("46532D736FC97E89");
+    mBeaconManager.addRuleRestrictionToIncludeSID("8E453771B5785ED8");
+    mBeaconManager.addRuleRestrictionToIncludeSID("994C2A3D97C3972D");
+
+}
 
     @Nullable
     @Override
@@ -141,33 +148,32 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
         lstBeacons = (ListView) rootView.findViewById(R.id.lstBeacons);
 
-        ((FloatingActionButton) rootView.findViewById(R.id.action_start)).setOnClickListener(
+        ((ImageButton) rootView.findViewById(R.id.scan)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-                        if (!scaning) {
-
+                        //if(!scaning) {
                             startScan();
+                        //}
 
 
-                        }
 
                     }
                 }
         );
 
-        ((FloatingActionButton) rootView.findViewById(R.id.action_stop)).setOnClickListener(
+
+        ((ImageButton) rootView.findViewById(R.id.power)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        if (scaning) {
+                       // if (scaning) {
                             stopScan();
 
                             beacon.beaconList=beaconList;
                             beacon.beaconBirth();
-                        }
+                       //}
 
                     }
                 }
@@ -192,7 +198,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         });
 
 
-        ((Button)rootView.findViewById(R.id.readResults)).setOnClickListener(
+        ((ImageButton)rootView.findViewById(R.id.readResults)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -204,7 +210,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     }
                 );
 
-        ((Button)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
+        ((ImageButton)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -345,13 +351,14 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     }
 
     public void startScan() {
+        Log.e("Scanning:","pressed");
         mBeaconManager.startScan();
-        scaning = true;
+        //scaning = true;
     }
 
     public void stopScan() {
         mBeaconManager.stopScan();
-        scaning = false;
+        //scaning = false;
     }
 
     /**
