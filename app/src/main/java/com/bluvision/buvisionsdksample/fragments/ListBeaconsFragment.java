@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -141,7 +142,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
         lstBeacons = (ListView) rootView.findViewById(R.id.lstBeacons);
 
-        ((FloatingActionButton) rootView.findViewById(R.id.action_start)).setOnClickListener(
+        ((ImageButton) rootView.findViewById(R.id.scan)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -157,7 +158,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                 }
         );
 
-        ((FloatingActionButton) rootView.findViewById(R.id.action_stop)).setOnClickListener(
+        ((ImageButton) rootView.findViewById(R.id.allocate)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -192,7 +193,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         });
 
 
-        ((Button)rootView.findViewById(R.id.readResults)).setOnClickListener(
+        ((ImageButton)rootView.findViewById(R.id.readResults)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -204,7 +205,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                     }
                 );
 
-        ((Button)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
+        ((ImageButton)rootView.findViewById(R.id.recordReadings)).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
