@@ -167,6 +167,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
                             stopScan();
 
                             beacon.beaconList=beaconList;
+                            Toast.makeText(getContext(), "Allocating power to beacons...", Toast.LENGTH_LONG).show();
                             beacon.beaconBirth();
                         }
 
@@ -388,7 +389,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public class Upload extends AsyncTask<Void, Void, String> {
 
         protected void onPreExecute(){
-            Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Uploading sensor readings...", Toast.LENGTH_LONG).show();
             Log.e("OnPreExecute","yes");
         }
 
@@ -442,7 +443,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
         Log.e("Post execute upload","Here");
         if(result.isEmpty() == false){
 
-        Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Sensor readings uploaded to Dropbox", Toast.LENGTH_LONG).show();
 
             Log.e("DbExampleLog", "The uploaded file's rev is: " + result);
       }else{
@@ -495,7 +496,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
     public class Download extends AsyncTask<Void, Void, String> {
 
         protected void onPreExecute(){
-            Toast.makeText(getContext(), "OnPreExecute", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Retrieving algorithm results...", Toast.LENGTH_LONG).show();
             Log.e("OnPreExecute","yes");
 
         }
@@ -557,7 +558,7 @@ public class ListBeaconsFragment extends BaseFragment implements BeaconListener 
 
             if(result.isEmpty() == false){
 
-                //Toast.makeText(getContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Results retrieved ", Toast.LENGTH_LONG).show();
 
                 Log.e("DbExampleLog", "The downloaded file's rev is: " + result);
 
