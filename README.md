@@ -1,7 +1,7 @@
 # sensor-controller
 Android component of the sensor controller
 
-This is an Android app that can be used with Bluvision BEEKs beacons and a Dropbox accoount
+This is an Android app that can be used with Bluvision BEEKs beacons and a Dropbox account
 for distributed estimation. To use this app, it is required to have:
 1) Android device with API level minimum 23 and at least Bluetooth version 4.0
 2) Bluvision BEEKs beacons
